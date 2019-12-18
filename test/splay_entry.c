@@ -7,17 +7,13 @@
 #include <assert.h>
 
 #include "../splaytree.h"
-
-struct teststruct {
-	int a;
-	int b;
-};
+#include "common.h"
 
 int main(void)
 {
-	struct teststruct item;
+	struct splayitem item;
 
-	assert(&item == container_of(&item.b, struct teststruct, b));
+	assert(&item == splay_entry(&item.splay, struct splayitem, splay));
 
 	return 0;
 }

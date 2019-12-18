@@ -1,27 +1,27 @@
 /* SPDX-License-Identifier: MIT */
-/* Minimal red-black-tree helper functions test
+/* Minimal Splay-tree helper functions test
  *
- * SPDX-FileCopyrightText: 2012-2016, Sven Eckelmann <sven@narfation.org>
+ * SPDX-FileCopyrightText: 2012-2019, Sven Eckelmann <sven@narfation.org>
  */
 
-#ifndef __RBTREE_COMMON_TREEOPS_H__
-#define __RBTREE_COMMON_TREEOPS_H__
+#ifndef __SPLAYTREE_COMMON_TREEOPS_H__
+#define __SPLAYTREE_COMMON_TREEOPS_H__
 
 #include <stddef.h>
 #include <stdint.h>
 
-#include "../rbtree.h"
+#include "../splaytree.h"
 #include "common.h"
 
-static __inline__ void rbitem_insert(struct rb_root *root,
-				     struct rbitem *new_entry)
+static __inline__ void splayitem_insert_unbalanced(struct splay_root *root,
+						   struct splayitem *new_entry)
 {
-	struct rb_node *parent = NULL;
-	struct rb_node **cur_nodep = &root->node;
-	struct rbitem *cur_entry;
+	struct splay_node *parent = NULL;
+	struct splay_node **cur_nodep = &root->node;
+	struct splayitem *cur_entry;
 
 	while (*cur_nodep) {
-		cur_entry = rb_entry(*cur_nodep, struct rbitem, rb);
+		cur_entry = splay_entry(*cur_nodep, struct splayitem, splay);
 
 		parent = *cur_nodep;
 		if (cmpint(&new_entry->i, &cur_entry->i) <= 0)
@@ -30,17 +30,25 @@ static __inline__ void rbitem_insert(struct rb_root *root,
 			cur_nodep = &((*cur_nodep)->right);
 	}
 
-	rb_insert(&new_entry->rb, parent, cur_nodep, root);
+	splay_link_node(&new_entry->splay, parent, cur_nodep);
 }
 
-static __inline__ struct rbitem *rbitem_find(struct rb_root *root, uint16_t x)
+static __inline__ void splayitem_insert_balanced(struct splay_root *root,
+						 struct splayitem *new_entry)
 {
-	struct rb_node **cur_nodep = &root->node;
-	struct rbitem *cur_entry;
+	splayitem_insert_unbalanced(root, new_entry);
+	splay_splaying(&new_entry->splay, root);
+}
+
+static __inline__ struct splayitem *splayitem_find(struct splay_root *root,
+						   uint16_t x)
+{
+	struct splay_node **cur_nodep = &root->node;
+	struct splayitem *cur_entry;
 	int res;
 
 	while (*cur_nodep) {
-		cur_entry = rb_entry(*cur_nodep, struct rbitem, rb);
+		cur_entry = splay_entry(*cur_nodep, struct splayitem, splay);
 
 		res = cmpint(&x, &cur_entry->i);
 		if (res == 0)
@@ -55,4 +63,4 @@ static __inline__ struct rbitem *rbitem_find(struct rb_root *root, uint16_t x)
 	return NULL;
 }
 
-#endif /* __RBTREE_COMMON_TREEOPS_H__ */
+#endif /* __SPLAYTREE_COMMON_TREEOPS_H__ */

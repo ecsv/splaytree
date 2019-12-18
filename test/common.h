@@ -1,22 +1,22 @@
 /* SPDX-License-Identifier: MIT */
-/* Minimal red-black-tree helper functions test
+/* Minimal Splay-tree helper functions test
  *
- * SPDX-FileCopyrightText: 2012-2016, Sven Eckelmann <sven@narfation.org>
+ * SPDX-FileCopyrightText: 2012-2019, Sven Eckelmann <sven@narfation.org>
  */
 
-#ifndef __RBTREE_COMMON_H__
-#define __RBTREE_COMMON_H__
+#ifndef __SPLAYTREE_COMMON_H__
+#define __SPLAYTREE_COMMON_H__
 
 #include <stddef.h>
 #include <stdint.h>
 
-#include "../rbtree.h"
+#include "../splaytree.h"
 
 #define ARRAY_SIZE(x) (sizeof(x) / sizeof(x[0]))
 
-struct rbitem {
+struct splayitem {
 	uint16_t i;
-	struct rb_node rb;
+	struct splay_node splay;
 };
 
 static __inline__ uint8_t getnum(void)
@@ -71,4 +71,4 @@ static __inline__ void random_shuffle_array(uint16_t *operations, uint16_t len)
 	}
 }
 
-#endif /* __RBTREE_COMMON_H__ */
+#endif /* __SPLAYTREE_COMMON_H__ */

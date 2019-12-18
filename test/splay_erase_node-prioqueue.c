@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
-/* Minimal red-black-tree helper functions test
+/* Minimal Splay-tree helper functions test
  *
- * SPDX-FileCopyrightText: 2012-2016, Sven Eckelmann <sven@narfation.org>
+ * SPDX-FileCopyrightText: 2012-2019, Sven Eckelmann <sven@narfation.org>
  */
 
 #include <assert.h>
@@ -9,7 +9,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-#include "../rbtree.h"
+#include "../splaytree.h"
 #include "common.h"
 #include "common-prioqueue.h"
 
@@ -42,9 +42,9 @@ static uint16_t valuequeue_getmin(void)
 
 int main(void)
 {
-	struct rb_prioqueue queue;
+	struct splay_prioqueue queue;
 	size_t i;
-	struct rbitem *item;
+	struct splayitem *item;
 	uint16_t operation;
 
 	for (i = 0; i < 256; i++) {
@@ -52,7 +52,7 @@ int main(void)
 		inserted = 0;
 		queuelen = 0;
 
-		rb_prioqueue_init(&queue);
+		splay_prioqueue_init(&queue);
 		while (inserted < ARRAY_SIZE(values) ||
 		       queuelen != 0) {
 
@@ -62,17 +62,17 @@ int main(void)
 				operation = get_unsigned16() % 2;
 
 			if (operation == 1) {
-				item = (struct rbitem *)malloc(sizeof(*item));
+				item = (struct splayitem *)malloc(sizeof(*item));
 				assert(item);
 
 				item->i = values[inserted];
-				rb_prioqueue_insert(&queue, item);
+				splay_prioqueue_insert_unbalanced(&queue, item);
 
 				valuequeue[queuelen] = values[inserted];
 				inserted++;
 				queuelen++;
 			} else {
-				item = rb_prioqueue_pop(&queue);
+				item = splay_prioqueue_pop_unbalanced(&queue);
 
 				if (queuelen) {
 					assert(item);
@@ -86,7 +86,7 @@ int main(void)
 
 			}
 		}
-		assert(rb_empty(&queue.root));
+		assert(splay_empty(&queue.root));
 	}
 
 	return 0;

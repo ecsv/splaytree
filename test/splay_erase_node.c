@@ -1,16 +1,17 @@
 // SPDX-License-Identifier: MIT
-/* Minimal red-black-tree helper functions test
+/* Minimal Splay-tree helper functions test
  *
- * SPDX-FileCopyrightText: 2012-2016, Sven Eckelmann <sven@narfation.org>
+ * SPDX-FileCopyrightText: 2012-2019, Sven Eckelmann <sven@narfation.org>
  */
 
 #include <assert.h>
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include "../rbtree.h"
+#include "../splaytree.h"
 #include "common.h"
 #include "common-treeops.h"
 #include "common-treevalidation.h"
@@ -21,41 +22,39 @@ static uint8_t skiplist[ARRAY_SIZE(values)];
 
 int main(void)
 {
-	struct rb_root root;
+	struct splay_root root;
 	size_t i, j;
-	struct rbitem *item;
+	struct splayitem *item;
 
 	for (i = 0; i < 256; i++) {
 		random_shuffle_array(values, (uint16_t)ARRAY_SIZE(values));
 		memset(skiplist, 1, sizeof(skiplist));
 
-		INIT_RB_ROOT(&root);
+		INIT_SPLAY_ROOT(&root);
 		for (j = 0; j < ARRAY_SIZE(values); j++) {
-			item = (struct rbitem *)malloc(sizeof(*item));
+			item = (struct splayitem *)malloc(sizeof(*item));
 			assert(item);
 
 			item->i = values[j];
-			rbitem_insert(&root, item);
+			splayitem_insert_unbalanced(&root, item);
 			skiplist[values[j]] = 0;
 		}
 
 		random_shuffle_array(delete_items, (uint16_t)ARRAY_SIZE(delete_items));
 		for (j = 0; j < ARRAY_SIZE(delete_items); j++) {
-			item = rbitem_find(&root, delete_items[j]);
+			item = splayitem_find(&root, delete_items[j]);
 
 			assert(item);
 			assert(item->i == delete_items[j]);
 
-			rb_erase(&item->rb, &root);
+			splay_erase_node(&item->splay, &root);
 			skiplist[item->i] = 1;
 			free(item);
 
 			check_root_order(&root, skiplist,
 					(uint16_t)ARRAY_SIZE(skiplist));
-			check_depth(&root);
-			check_llrb_nodes(&root);
 		}
-		assert(rb_empty(&root));
+		assert(splay_empty(&root));
 	}
 
 	return 0;

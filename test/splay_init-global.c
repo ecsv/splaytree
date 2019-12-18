@@ -8,16 +8,11 @@
 
 #include "../splaytree.h"
 
-struct teststruct {
-	int a;
-	int b;
-};
+static DEFINE_SPLAYROOT(testtree);
 
 int main(void)
 {
-	struct teststruct item;
-
-	assert(&item == container_of(&item.b, struct teststruct, b));
+	assert(splay_empty(&testtree));
 
 	return 0;
 }

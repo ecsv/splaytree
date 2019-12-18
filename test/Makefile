@@ -2,24 +2,28 @@
 # SPDX-License-Identifier: MIT
 # -*- makefile -*-
 #
-# Minimal red-black-tree helper functions test
+# Minimal Splay-tree helper functions test
 #
-# SPDX-FileCopyrightText: 2012-2016, Sven Eckelmann <sven@narfation.org>
+# SPDX-FileCopyrightText: 2012-2019, Sven Eckelmann <sven@narfation.org>
 
 TESTS_CXX_COMPATIBLE = \
  containerof \
- rb_entry \
- rb_init-explicit \
- rb_init-local \
- rb_init-global \
- rb_insert \
- rb_first \
- rb_last \
- rb_next \
- rb_prev \
- rb_erase \
- rb_insert-prioqueue \
- rb_erase-prioqueue \
+ splay_entry \
+ splay_init-explicit \
+ splay_init-local \
+ splay_init-global \
+ splay_link_node \
+ splay_erase_node \
+ splay_first \
+ splay_last \
+ splay_next \
+ splay_prev \
+ splay_link_node-prioqueue \
+ splay_erase_node-prioqueue \
+ splay_splaying \
+ splay_erase \
+ splay_insert-prioqueue \
+ splay_erase-prioqueue \
 
 TESTS_C_ONLY = \
 
@@ -73,17 +77,17 @@ $(TESTS_OK): %.ok: %
 .c.o:
 	$(COMPILE.c) -o $@ $<
 
-rbtree.o: ../rbtree.c
+splaytree.o: ../splaytree.c
 	$(COMPILE.c) -o $@ $<
 
-$(TESTS): %: %.o rbtree.o
+$(TESTS): %: %.o splaytree.o
 	$(LINK.o) $^ $(LDLIBS) -o $@
 
 clean:
-	@$(RM) $(TESTS_ALL) $(DEP) $(TESTS_OK) $(TESTS:=.o) $(TESTS:=.d) rbtree.o rbtree.d
+	@$(RM) $(TESTS_ALL) $(DEP) $(TESTS_OK) $(TESTS:=.o) $(TESTS:=.d) splaytree.o splaytree.d
 
 # load dependencies
-DEP = $(TESTS:=.d) rbtree.d
+DEP = $(TESTS:=.d) splaytree.d
 -include $(DEP)
 
 .PHONY: all clean
