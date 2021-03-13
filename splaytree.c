@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 /* Minimal Splay-tree helper functions
  *
- * SPDX-FileCopyrightText: 2012-2019, Sven Eckelmann <sven@narfation.org>
+ * SPDX-FileCopyrightText: Sven Eckelmann <sven@narfation.org>
  */
 
 #include "splaytree.h"
